@@ -342,6 +342,13 @@ OPT_TABLE = {
     'jit':  'hybrid      extraopts     jit',
     }
 
+def final_check_config(config):
+    # For now, 64-bit JIT requires boehm.  You have to say it explicitly
+    # with --gc=boehm, so that you don't get boehm by mistake.
+    if IS_64_BITS:
+        if config.translation.jit and config.translation.gc != 'boehm':
+            raise ConfigError("for now, 64-bit JIT requires --gc=boehm")
+
 def set_opt_level(config, level):
     """Apply optimization suggestions on the 'config'.
     The optimizations depend on the selected level and possibly on the backend.
